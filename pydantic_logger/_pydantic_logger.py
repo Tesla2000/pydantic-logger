@@ -12,13 +12,18 @@ from pydantic import Field
 from pydantic import InstanceOf
 
 
-def _create_logger(validated_data: dict[str, Any]) -> Logger:
+def _create_logger(validated_data: dict[str, object]) -> Logger:
     if "name" not in validated_data or "level" not in validated_data:
         raise ValueError(
             f"Logger name or level not in validated data {validated_data}"
         )
-    logger = logging.getLogger(validated_data["name"])
-    logger.setLevel(validated_data["level"])
+    name = validated_data["name"]
+    assert isinstance(name, str)
+    logger = logging.getLogger(name)
+    level = validated_data["level"]
+    if level is not None:
+        assert isinstance(level, (str, int))
+        logger.setLevel(level)
     return logger
 
 
