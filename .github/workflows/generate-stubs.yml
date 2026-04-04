@@ -44,6 +44,6 @@ jobs:
           git stash --include-untracked
           git pull --rebase origin main
           git stash pop
-          git add stubs/
+          git add pydantic_logger
           git diff --cached --quiet || git commit -m "chore: regenerate stubs for pydantic-logger"
           git push origin main
