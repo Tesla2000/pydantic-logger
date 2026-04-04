@@ -1,6 +1,6 @@
 [project]
 name = "pydantic_logger"
-version = "0.1.4"
+version = "0.1.5"
 description = "Contains pydantic-compatible logger"
 authors = [{name = "Tesla2000", email = "fratajczak124@gmail.com"}]
 readme = "README.md"
