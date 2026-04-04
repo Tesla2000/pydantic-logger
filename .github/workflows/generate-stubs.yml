@@ -34,7 +34,7 @@ jobs:
         run: uv run stubgen -p pydantic_logger -o .
 
       - name: Verify stubs with mypy
-        run: uv run mypy stubs/
+        run: uv run mypy pydantic_logger
 
       - name: Commit stubs
         if: github.event_name == 'push'
