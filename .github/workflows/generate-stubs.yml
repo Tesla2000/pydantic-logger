@@ -31,7 +31,7 @@ jobs:
         run: uv sync --group stubs
 
       - name: Generate stubs
-        run: uv run stubgen -p pydantic_logger -o stubs/
+        run: uv run stubgen -p pydantic_logger -o .
 
       - name: Verify stubs with mypy
         run: uv run mypy stubs/

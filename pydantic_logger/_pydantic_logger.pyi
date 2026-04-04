@@ -4,7 +4,22 @@ from typing import Any, ClassVar, Literal
 
 class _PydanticLogger(BaseModel):
     model_config: ClassVar[ConfigDict]
-    level: Literal[50, 40, 30, 20, 10, 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET'] | None
+    level: (
+        Literal[
+            50,
+            40,
+            30,
+            20,
+            10,
+            "CRITICAL",
+            "ERROR",
+            "WARNING",
+            "INFO",
+            "DEBUG",
+            "NOTSET",
+        ]
+        | None
+    )
     name: str
     logger: InstanceOf[Logger]
     def debug(self, msg: str, *args: Any, **kwargs: Any) -> None: ...

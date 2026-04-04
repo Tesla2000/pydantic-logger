@@ -2,8 +2,7 @@ from unittest import TestCase
 
 
 class TestImport(TestCase):
-    @staticmethod
-    def test_import():
+    def test_import(self):
         import pydantic_logger  # ignore
 
         _ = pydantic_logger

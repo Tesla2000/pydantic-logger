@@ -5,7 +5,7 @@ from typing import ClassVar, Literal
 
 class _StreamHandlerConfig(BaseModel):
     model_config: ClassVar[ConfigDict]
-    stream: Literal['stdout', 'stderr']
+    stream: Literal["stdout", "stderr"]
     def build(self) -> logging.Handler: ...
 
 class _FileHandlerConfig(BaseModel):
@@ -15,7 +15,7 @@ class _FileHandlerConfig(BaseModel):
 
 class _LoggingConfig(BaseModel):
     model_config: ClassVar[ConfigDict]
-    level: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+    level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
     format: str
     handlers: tuple[_StreamHandlerConfig | _FileHandlerConfig, ...]
     def apply(self) -> None: ...
