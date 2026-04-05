@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 26.3.0
+    rev: 26.3.1
     hooks:
       - id: black
         args: ["--preview", "--line-length", "79"]
@@ -22,7 +22,7 @@ repos:
       - id: autoflake
         args: [ --remove-all-unused-imports, --in-place ]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.1
+    rev: v1.20.0
     hooks:
       - id: mypy
         exclude: \.pyi$
@@ -50,8 +50,8 @@ repos:
           ]
         stages: [ pre-commit ]
   - repo: https://github.com/Tesla2000/any-hook
-    rev: v1.0.7
+    rev: v2.0.8
     hooks:
       - id: any-hook
-        args: [--modifiers, '[{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
+        args: [--modifiers, '[{"type": "git-add", "directories": ["pydantic_logger", "tests"]},{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
         stages: [ pre-commit ]

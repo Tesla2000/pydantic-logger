@@ -2,11 +2,28 @@ from logging import Logger
 from pydantic import BaseModel, ConfigDict, InstanceOf as InstanceOf
 from typing import Any, ClassVar, Literal
 
+from typing import Optional
+
 class _PydanticLogger(BaseModel):
-    model_config: ClassVar[ConfigDict] = ...
-    level: Literal[50, 40, 30, 20, 10, 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET'] | None = ...
-    name: str = ...
-    logger: InstanceOf[Logger] = ...
+    model_config: ClassVar[ConfigDict]
+    level: (
+        Literal[
+            50,
+            40,
+            30,
+            20,
+            10,
+            "CRITICAL",
+            "ERROR",
+            "WARNING",
+            "INFO",
+            "DEBUG",
+            "NOTSET",
+        ]
+        | None
+    )
+    name: str
+    logger: InstanceOf[Logger]
     def debug(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
     def info(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
     def warning(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
@@ -14,3 +31,24 @@ class _PydanticLogger(BaseModel):
     def critical(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
     def exception(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
     def log(self, level: int, msg: str, *args: Any, **kwargs: Any) -> None: ...
+    def __init__(
+        self,
+        *,
+        level: Optional[
+            Literal[
+                50,
+                40,
+                30,
+                20,
+                10,
+                "CRITICAL",
+                "ERROR",
+                "WARNING",
+                "INFO",
+                "DEBUG",
+                "NOTSET",
+            ]
+        ] = ...,
+        name: str = ...,
+        logger: InstanceOf[Logger] = ...,
+    ) -> None: ...
