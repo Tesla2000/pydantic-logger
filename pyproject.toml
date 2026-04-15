@@ -7,7 +7,11 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "pydantic>=2.12.5",
+    "pydantic-frozendict",
 ]
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
 
 [build-system]
 requires = ["hatchling"]
@@ -16,7 +20,10 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["pydantic_logger"]
 
+[tool.uv.sources]
+pydantic-frozendict = { git = "https://github.com/Tesla2000/pydantic-frozendict" }
+
 [dependency-groups]
-stubs = [
+dev = [
     "mypy>=1.19.1",
 ]
