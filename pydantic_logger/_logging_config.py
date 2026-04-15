@@ -3,11 +3,14 @@ import sys
 from pathlib import Path
 from typing import ClassVar
 from typing import Literal
-from typing import Union
 
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic_frozendict import PydanticFrozendict
+from pydantic_logger._logging_level import _LoggingLevel as LoggingLevel
+from pydantic_logger._logging_level import (
+    _LoggingLevelAnnotation as LoggingLevelAnnotation,
+)
 
 
 class _StreamHandlerConfig(BaseModel):
@@ -30,17 +33,12 @@ class _FileHandlerConfig(BaseModel):
         return logging.FileHandler(str(self.path))
 
 
-LoggingLevel = Union[
-    int, Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-]
-
-
 class _LoggingConfig(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
 
-    level: LoggingLevel = "INFO"
+    level: LoggingLevelAnnotation = LoggingLevel.INFO
     format: str = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-    logger_to_level: PydanticFrozendict[str, LoggingLevel] = (
+    logger_to_level: PydanticFrozendict[str, LoggingLevelAnnotation] = (
         PydanticFrozendict()
     )
     handlers: tuple[_StreamHandlerConfig | _FileHandlerConfig, ...] = (

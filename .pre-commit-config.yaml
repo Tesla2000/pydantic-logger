@@ -52,7 +52,7 @@ repos:
             ".venv,venv,tests/base.py",
             "--ignore-attributes-for-classes=.*",
             "--ignore-decorators=@app.*,@pytest.fixture,@property,@model_validator,@field_serializer,@field_validator",
-            "--ignore-names=Meta,__dict__,cli_cmd,model_post_init,apply",
+            "--ignore-names=Meta,__dict__,cli_cmd,model_post_init,apply,setUp,",
           ]
         stages: [ pre-commit ]
   - repo: https://github.com/Tesla2000/any-hook

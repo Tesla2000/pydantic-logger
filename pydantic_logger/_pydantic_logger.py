@@ -3,13 +3,15 @@ import uuid
 from logging import Logger
 from typing import Any
 from typing import ClassVar
-from typing import Literal
 from typing import Optional
 
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field
 from pydantic import InstanceOf
+from pydantic_logger._logging_level import (
+    _LoggingLevelAnnotation as LoggingLevelAnnotation,
+)
 
 
 def _create_logger(validated_data: dict[str, object]) -> Logger:
@@ -30,21 +32,7 @@ def _create_logger(validated_data: dict[str, object]) -> Logger:
 class _PydanticLogger(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
 
-    level: Optional[
-        Literal[
-            50,
-            40,
-            30,
-            20,
-            10,
-            "CRITICAL",
-            "ERROR",
-            "WARNING",
-            "INFO",
-            "DEBUG",
-            "NOTSET",
-        ]
-    ] = None
+    level: Optional[LoggingLevelAnnotation] = None
     name: str = Field(default_factory=lambda: str(uuid.uuid4()))
     logger: InstanceOf[Logger] = Field(
         default_factory=_create_logger, exclude=True
