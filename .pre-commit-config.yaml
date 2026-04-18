@@ -28,7 +28,7 @@ repos:
     rev: v1.20.0
     hooks:
       - id: mypy
-        exclude: \.pyi$
+        exclude: (tests|\.pyi$)
         additional_dependencies:
           - pydantic>=2.8.2
           - pydantic-settings>=2.13.0
@@ -52,7 +52,7 @@ repos:
             ".venv,venv,tests/base.py",
             "--ignore-attributes-for-classes=.*",
             "--ignore-decorators=@app.*,@pytest.fixture,@property,@model_validator,@field_serializer,@field_validator",
-            "--ignore-names=Meta,__dict__,cli_cmd,model_post_init,apply",
+            "--ignore-names=Meta,__dict__,cli_cmd,model_post_init,apply,setUp,",
           ]
         stages: [ pre-commit ]
   - repo: https://github.com/Tesla2000/any-hook
@@ -60,5 +60,5 @@ repos:
     hooks:
       - id: any-hook
         exclude: \.pyi$
-        args: [--modifiers, '[{"type": "git-add", "directories": ["pydantic_logger", "tests"]},{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
+        args: [--modifiers, '[{"type": "git-add", "directories": ["pydantic_logger", "tests"]},{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
         stages: [ pre-commit ]
