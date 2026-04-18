@@ -10,6 +10,16 @@ dependencies = [
     "pydantic-frozendict",
 ]
 
+
+[tool.coverage.run]
+branch = true
+source = ["pydantic_logger"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+skip_covered = true
+
 [tool.mypy]
 plugins = ["pydantic.mypy"]
 
@@ -26,4 +36,8 @@ pydantic-frozendict = { git = "https://github.com/Tesla2000/pydantic-frozendict"
 [dependency-groups]
 dev = [
     "mypy>=1.19.1",
+]
+test = [
+    "pytest>=8.4.2",
+    "pytest-cov>=7.1.0",
 ]
