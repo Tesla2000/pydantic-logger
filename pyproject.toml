@@ -7,8 +7,27 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "pydantic>=2.12.5",
-    "pydantic-frozendict",
+    "pydantic-frozendict>=0.1.3",
 ]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/Tesla2000/pydantic-logger"
+Issues = "https://github.com/Tesla2000/pydantic-logger/issues"
+Coverage = "https://codecov.io/gh/Tesla2000/pydantic-logger"
 
 
 [tool.coverage.run]
@@ -29,9 +48,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["pydantic_logger"]
-
-[tool.uv.sources]
-pydantic-frozendict = { git = "https://github.com/Tesla2000/pydantic-frozendict" }
 
 [dependency-groups]
 dev = [
