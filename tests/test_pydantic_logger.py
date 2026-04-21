@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from pydantic import ValidationError
+
 from pydantic_logger import PydanticLogger
 from pydantic_logger._pydantic_logger import _create_logger
 

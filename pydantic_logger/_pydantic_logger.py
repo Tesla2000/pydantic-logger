@@ -5,12 +5,14 @@ from logging import Logger
 from typing import Any
 from typing import ClassVar
 from typing import Optional
+from typing import Union
 
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field
 from pydantic import InstanceOf
 from pydantic import PositiveInt
+
 from pydantic_logger._logging_level import (
     _LoggingLevelAnnotation as LoggingLevelAnnotation,
 )
@@ -38,7 +40,7 @@ class _PydanticLogger(BaseModel):
 
     level: Optional[LoggingLevelAnnotation] = None
     name: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    stacklevel: PositiveInt | None = Field(
+    stacklevel: Union[PositiveInt, None] = Field(
         default_factory=lambda: os.getenv("PYDANTIC_LOGGER_STACK_LEVEL"),
         validate_default=True,
     )

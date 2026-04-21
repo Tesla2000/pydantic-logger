@@ -3,6 +3,7 @@ import logging
 import pytest
 from pydantic import BaseModel
 from pydantic import ValidationError
+
 from pydantic_logger import LoggingLevel
 from pydantic_logger import LoggingLevelAnnotation
 
