@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 from pydantic_frozendict import PydanticFrozendict
+
 from pydantic_logger import LoggingConfig
 from pydantic_logger import LoggingLevel
 from pydantic_logger._logging_config import _FileHandlerConfig

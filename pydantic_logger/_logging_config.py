@@ -8,6 +8,7 @@ from typing import Union
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic_frozendict import PydanticFrozendict
+
 from pydantic_logger._logging_level import _LoggingLevel as LoggingLevel
 from pydantic_logger._logging_level import (
     _LoggingLevelAnnotation as LoggingLevelAnnotation,
