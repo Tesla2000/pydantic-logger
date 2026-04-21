@@ -128,3 +128,21 @@ def test_log_delegates_with_level(logger_with_mock) -> None:
     pydantic_logger, mock_logger = logger_with_mock
     pydantic_logger.log(logging.WARNING, "msg")
     mock_logger.log.assert_called_once_with(logging.WARNING, "msg")
+
+
+def test_stacklevel_injected_into_kwargs() -> None:
+    mock_logger = MagicMock(spec=logging.Logger)
+    pydantic_logger = PydanticLogger(name="stacklevel.test", stacklevel=2)
+    object.__setattr__(pydantic_logger, "logger", mock_logger)
+    pydantic_logger.info("msg")
+    mock_logger.info.assert_called_once_with("msg", stacklevel=2)
+
+
+def test_stacklevel_not_overridden_when_caller_provides_it() -> None:
+    mock_logger = MagicMock(spec=logging.Logger)
+    pydantic_logger = PydanticLogger(
+        name="stacklevel.override.test", stacklevel=2
+    )
+    object.__setattr__(pydantic_logger, "logger", mock_logger)
+    pydantic_logger.info("msg", stacklevel=5)
+    mock_logger.info.assert_called_once_with("msg", stacklevel=5)
