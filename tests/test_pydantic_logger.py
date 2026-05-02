@@ -1,12 +1,15 @@
+import inspect
 import logging
-import uuid
+from types import FrameType
 from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pytest
 from pydantic import ValidationError
 
 from pydantic_logger import PydanticLogger
 from pydantic_logger._pydantic_logger import _create_logger
+from pydantic_logger._pydantic_logger import _get_caller_module_name
 
 
 def test_create_logger_raises_on_missing_keys() -> None:
@@ -14,13 +17,36 @@ def test_create_logger_raises_on_missing_keys() -> None:
         _create_logger({})
 
 
-def test_default_name_is_valid_uuid() -> None:
+def test_default_name_is_caller_module() -> None:
     logger = PydanticLogger()
-    uuid.UUID(logger.name)  # raises if invalid
+    assert logger.name == "tests.test_pydantic_logger"
 
 
-def test_two_default_instances_have_different_names() -> None:
-    assert PydanticLogger().name != PydanticLogger().name
+def test_get_caller_module_name_returns_module_name() -> None:
+    module_name = _get_caller_module_name()
+    assert module_name == "tests.test_pydantic_logger"
+
+
+def test_get_caller_module_name_raises_when_no_valid_frame() -> None:
+    with patch.object(inspect, "currentframe", return_value=None):
+        with pytest.raises(
+            ValueError, match="Could not determine caller module name"
+        ):
+            _get_caller_module_name()
+
+
+def test_get_caller_module_name_skips_non_string_module_names() -> None:
+    mock_frame_with_non_string = MagicMock(spec=FrameType)
+    mock_frame_with_non_string.f_globals = {"__name__": 123}
+    mock_frame_with_non_string.f_back = None
+
+    with patch.object(
+        inspect, "currentframe", return_value=mock_frame_with_non_string
+    ):
+        with pytest.raises(
+            ValueError, match="Could not determine caller module name"
+        ):
+            _get_caller_module_name()
 
 
 def test_default_level_is_none() -> None:
