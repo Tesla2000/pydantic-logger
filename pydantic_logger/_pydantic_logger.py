@@ -1,6 +1,6 @@
+import inspect
 import logging
 import os
-import uuid
 from logging import Logger
 from typing import Any
 from typing import ClassVar
@@ -16,6 +16,27 @@ from pydantic import PositiveInt
 from pydantic_logger._logging_level import (
     _LoggingLevelAnnotation as LoggingLevelAnnotation,
 )
+
+
+def _get_caller_module_name() -> str:
+    frame = inspect.currentframe()
+    try:
+        while frame is not None:
+            module_name = frame.f_globals.get("__name__")
+            if module_name and not isinstance(module_name, str):
+                module_name = None
+            if (
+                module_name
+                and not module_name.startswith("pydantic_logger")
+                and not module_name.startswith("pydantic")
+            ):
+                return module_name
+            frame = frame.f_back
+        raise ValueError(
+            "Could not determine caller module name from call stack"
+        )
+    finally:
+        del frame
 
 
 def _create_logger(validated_data: dict[str, object]) -> Logger:
@@ -39,7 +60,7 @@ class _PydanticLogger(BaseModel):
     )
 
     level: Optional[LoggingLevelAnnotation] = None
-    name: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str = Field(default_factory=_get_caller_module_name)
     stacklevel: Union[PositiveInt, None] = Field(
         default_factory=lambda: os.getenv("PYDANTIC_LOGGER_STACK_LEVEL"),
         validate_default=True,
