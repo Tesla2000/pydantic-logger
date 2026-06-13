@@ -8,13 +8,7 @@ import pytest
 from pydantic import ValidationError
 
 from pydantic_logger import PydanticLogger
-from pydantic_logger._pydantic_logger import _create_logger
-from pydantic_logger._pydantic_logger import _get_caller_module_name
-
-
-def test_create_logger_raises_on_missing_keys() -> None:
-    with pytest.raises(ValueError):
-        _create_logger({})
+from pydantic_logger._pydantic_logger_base import _get_caller_module_name
 
 
 def test_default_name_is_caller_module() -> None:
@@ -110,8 +104,7 @@ def test_frozen_prevents_level_mutation() -> None:
 @pytest.fixture
 def logger_with_mock():
     mock_logger = MagicMock(spec=logging.Logger)
-    pydantic_logger = PydanticLogger(name="method.test")
-    object.__setattr__(pydantic_logger, "logger", mock_logger)
+    pydantic_logger = PydanticLogger(name="method.test", logger=mock_logger)
     return pydantic_logger, mock_logger
 
 
@@ -157,19 +150,19 @@ def test_log_delegates_with_level(logger_with_mock) -> None:
     mock_logger.log.assert_called_once_with(logging.WARNING, "msg")
 
 
-def test_stacklevel_injected_into_kwargs() -> None:
-    mock_logger = MagicMock(spec=logging.Logger)
-    pydantic_logger = PydanticLogger(name="stacklevel.test", stacklevel=2)
-    object.__setattr__(pydantic_logger, "logger", mock_logger)
-    pydantic_logger.info("msg")
-    mock_logger.info.assert_called_once_with("msg", stacklevel=2)
-
-
-def test_stacklevel_not_overridden_when_caller_provides_it() -> None:
+def test_stack_level_injected_into_kwargs() -> None:
     mock_logger = MagicMock(spec=logging.Logger)
     pydantic_logger = PydanticLogger(
-        name="stacklevel.override.test", stacklevel=2
+        name="stack_level.test", stack_level=2, logger=mock_logger
     )
-    object.__setattr__(pydantic_logger, "logger", mock_logger)
-    pydantic_logger.info("msg", stacklevel=5)
-    mock_logger.info.assert_called_once_with("msg", stacklevel=5)
+    pydantic_logger.info("msg")
+    mock_logger.info.assert_called_once_with("msg", stack_level=2)
+
+
+def test_stack_level_not_overridden_when_caller_provides_it() -> None:
+    mock_logger = MagicMock(spec=logging.Logger)
+    pydantic_logger = PydanticLogger(
+        name="stack_level.override.test", stack_level=2, logger=mock_logger
+    )
+    pydantic_logger.info("msg", stack_level=5)
+    mock_logger.info.assert_called_once_with("msg", stack_level=5)

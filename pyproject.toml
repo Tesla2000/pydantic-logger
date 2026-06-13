@@ -24,6 +24,13 @@ classifiers = [
     "Typing :: Typed",
 ]
 
+[project.optional-dependencies]
+loguru = ["loguru>=0.7"]
+structlog = ["structlog>=24"]
+logbook = ["logbook>=1.7"]
+picologging = ["picologging>=0.9"]
+eliot = ["eliot>=1.15"]
+
 [project.urls]
 Homepage = "https://github.com/Tesla2000/pydantic-logger"
 Issues = "https://github.com/Tesla2000/pydantic-logger/issues"
@@ -41,6 +48,7 @@ skip_covered = true
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]
+mypy_path = "stubs"
 
 [build-system]
 requires = ["hatchling"]
@@ -52,6 +60,11 @@ packages = ["pydantic_logger"]
 [dependency-groups]
 dev = [
     "mypy>=1.19.1",
+    "loguru>=0.7",
+    "structlog>=24",
+    "logbook>=1.7",
+    "picologging>=0.9",
+    "eliot>=1.15",
 ]
 test = [
     "pytest>=8.4.2",
