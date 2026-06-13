@@ -20,7 +20,7 @@ if not issubclass(Logger, _LoggerProtocol):
 @runtime_checkable
 class _Logger(_LoggerProtocol, Protocol):
     def log(
-        self, level: int, msg: str, *args: object, **kwargs: object
+        self, level: int, msg: object, *args: object, **kwargs: object
     ) -> object: ...
 
 
@@ -30,9 +30,7 @@ def _get_stack_level() -> Union[int, None]:
         return stack_level
     level = int(stack_level)
     if level < 1:
-        raise ValueError(
-            f"{stack_level=} must be None of {PositiveInt.__name__}"
-        )
+        raise ValueError(f"{stack_level=} must be None of PositiveInt")
     return int(stack_level)
 
 
@@ -45,7 +43,10 @@ class _PydanticBuiltinLogger(_PydanticLoggerBase[_Logger]):
         logger = logging.getLogger(self.name)
         if self.level is not None:
             logger.setLevel(self.level)
-        assert isinstance(logger, _Logger)
+        if not isinstance(logger, _Logger):
+            raise ValueError(
+                f"{logger!r} is not an instance of {_Logger.__name__}"
+            )
         return logger
 
     def _set_stack_level_if_configured(

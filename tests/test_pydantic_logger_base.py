@@ -1,35 +1,34 @@
 import inspect
 import logging
+import os
+import typing
 from types import FrameType
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import pytest
+import structlog
 from pydantic import ValidationError
 
+import pydantic_logger._pydantic_logger_base as base_mod
 from pydantic_logger import PydanticLogger
-from pydantic_logger._pydantic_logger_base import _get_caller_module_name
+from pydantic_logger import PydanticLoggerBase
 
 
 def test_default_name_is_caller_module() -> None:
     logger = PydanticLogger()
-    assert logger.name == "tests.test_pydantic_logger"
+    assert logger.name == "tests.test_pydantic_logger_base"
 
 
-def test_get_caller_module_name_returns_module_name() -> None:
-    module_name = _get_caller_module_name()
-    assert module_name == "tests.test_pydantic_logger"
-
-
-def test_get_caller_module_name_raises_when_no_valid_frame() -> None:
+def test_default_name_raises_when_no_valid_frame() -> None:
     with patch.object(inspect, "currentframe", return_value=None):
         with pytest.raises(
             ValueError, match="Could not determine caller module name"
         ):
-            _get_caller_module_name()
+            PydanticLogger()
 
 
-def test_get_caller_module_name_skips_non_string_module_names() -> None:
+def test_default_name_skips_non_string_module_names() -> None:
     mock_frame_with_non_string = MagicMock(spec=FrameType)
     mock_frame_with_non_string.f_globals = {"__name__": 123}
     mock_frame_with_non_string.f_back = None
@@ -40,7 +39,7 @@ def test_get_caller_module_name_skips_non_string_module_names() -> None:
         with pytest.raises(
             ValueError, match="Could not determine caller module name"
         ):
-            _get_caller_module_name()
+            PydanticLogger()
 
 
 def test_default_level_is_none() -> None:
@@ -166,3 +165,70 @@ def test_stack_level_not_overridden_when_caller_provides_it() -> None:
     )
     pydantic_logger.info("msg", stack_level=5)
     mock_logger.info.assert_called_once_with("msg", stack_level=5)
+
+
+def test_stack_level_read_from_env_var() -> None:
+    with patch.dict(os.environ, {"PYDANTIC_LOGGER_STACK_LEVEL": "3"}):
+        logger = PydanticLogger(name="env.stack_level")
+    assert logger.stack_level == 3
+
+
+def test_stack_level_env_var_zero_raises() -> None:
+    with patch.dict(os.environ, {"PYDANTIC_LOGGER_STACK_LEVEL": "0"}):
+        with pytest.raises(ValueError):
+            PydanticLogger(name="env.stack_level.invalid")
+
+
+def test_invalid_logger_passed_raises() -> None:
+    with pytest.raises(ValueError):
+        PydanticLogger(name="bad.logger", logger=object())  # type: ignore[arg-type]
+
+
+def test_logger_type_validator_raises_when_multiple_types() -> None:
+    class _ALogger(PydanticLoggerBase[logging.Logger]):  # type: ignore[type-arg]
+        def _create_logger(self) -> logging.Logger:
+            return logging.getLogger(self.name)
+
+    class _BLogger(PydanticLoggerBase[structlog.PrintLogger]):  # type: ignore[type-arg]
+        def _create_logger(self) -> structlog.PrintLogger:
+            return structlog.PrintLogger()
+
+    class _MultiLogger(_ALogger, _BLogger):  # type: ignore[misc]
+        def _create_logger(self) -> logging.Logger:
+            return logging.getLogger(self.name)
+
+    parameterized_parents = [
+        PydanticLoggerBase[logging.Logger],
+        PydanticLoggerBase[structlog.PrintLogger],
+    ]
+    with patch.object(
+        base_mod, "_get_unique_bases", return_value=iter(parameterized_parents)
+    ):
+        with pytest.raises(ValueError, match="more than one"):
+            _MultiLogger._logger_type_validator(logging.getLogger("x"))
+
+
+def test_logger_type_validator_skips_non_loggertype_arg() -> None:
+    class _SkipLogger(PydanticLoggerBase[logging.Logger]):  # type: ignore[type-arg]
+        def _create_logger(self) -> logging.Logger:
+            return logging.getLogger(self.name)
+
+    OtherVar = typing.TypeVar("OtherVar")
+
+    class _FakeBase(PydanticLoggerBase[logging.Logger]):  # type: ignore[type-arg]
+        def _create_logger(self) -> logging.Logger:
+            return logging.getLogger(self.name)
+
+    _FakeBase.__orig_bases__ = (typing.Generic[OtherVar],)  # type: ignore[attr-defined]
+    _FakeBase.__pydantic_generic_metadata__ = {"args": (str,)}  # type: ignore[attr-defined]
+
+    real_base = PydanticLoggerBase[logging.Logger]
+    with patch.object(
+        base_mod,
+        "_get_unique_bases",
+        return_value=iter([_FakeBase, real_base]),
+    ):
+        result = _SkipLogger._logger_type_validator(
+            logging.getLogger("skip.test")
+        )
+    assert isinstance(result, logging.Logger)

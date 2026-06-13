@@ -22,15 +22,15 @@ else:
     )
 
 
-if not issubclass(picologging.Logger, _LoggerProtocol):
-    raise ValueError(
-        f"{picologging.Logger.__name__} is not an subclass of {_LoggerProtocol.__name__}"
-    )
-
-
 @runtime_checkable
 class _Logger(_LoggerProtocol, Protocol):
-    def setLevel(self, level: object) -> None: ...
+    def setLevel(self, level: int) -> None: ...
+
+
+if not issubclass(picologging.Logger, _Logger):
+    raise ValueError(
+        f"{picologging.Logger.__name__} is not an subclass of {_Logger.__name__}"
+    )
 
 
 class _PydanticPicologgingLogger(_PydanticLoggerBase[_Logger]):
@@ -40,5 +40,4 @@ class _PydanticPicologgingLogger(_PydanticLoggerBase[_Logger]):
         logger = picologging.getLogger(self.name)
         if self.level is not None:
             logger.setLevel(self.level)
-        assert isinstance(logger, _Logger)
         return logger

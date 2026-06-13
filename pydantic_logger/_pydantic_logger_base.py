@@ -1,4 +1,5 @@
 import inspect
+import sys
 import typing
 from abc import ABC
 from abc import abstractmethod
@@ -10,7 +11,6 @@ from typing import ClassVar
 from typing import Generic
 from typing import get_args
 from typing import Optional
-from typing import Self
 from typing import TYPE_CHECKING
 from typing import TypeVar
 
@@ -19,11 +19,15 @@ from pydantic import ConfigDict
 from pydantic import Field
 from pydantic import model_validator
 from pydantic import ModelWrapValidatorHandler
+from typing_extensions import Self
 
 from pydantic_logger._logger_protocol import _LoggerProtocol
 from pydantic_logger._logging_level import (
     _LoggingLevelAnnotation as LoggingLevelAnnotation,
 )
+
+
+_ZIP_STRICT_SUPPORTED = sys.version_info >= (3, 10)
 
 
 def _get_caller_module_name() -> str:
@@ -100,11 +104,15 @@ class _PydanticLoggerBase(BaseModel, Generic[LoggerType], ABC):
                 for base in origin_bases:
                     if not isinstance(base, typing._GenericAlias):
                         continue
-                    for arg, generic_class in zip(
-                        get_args(base),
-                        class_.__pydantic_generic_metadata__["args"],
-                        strict=True,
-                    ):
+                    generic_args = class_.__pydantic_generic_metadata__[
+                        "args"
+                    ]
+                    pairs = (
+                        zip(get_args(base), generic_args, strict=True)
+                        if _ZIP_STRICT_SUPPORTED
+                        else zip(get_args(base), generic_args)
+                    )
+                    for arg, generic_class in pairs:
                         if arg is LoggerType:
                             logger_types.add(generic_class)
             if len(logger_types) > 1:

@@ -1,7 +1,13 @@
 from typing import TYPE_CHECKING
 
 from pydantic_logger import _logger_types
+from pydantic_logger._logging_config import (
+    _FileHandlerConfig as FileHandlerConfig,
+)
 from pydantic_logger._logging_config import _LoggingConfig as LoggingConfig
+from pydantic_logger._logging_config import (
+    _StreamHandlerConfig as StreamHandlerConfig,
+)
 from pydantic_logger._logging_level import _LoggingLevel as LoggingLevel
 from pydantic_logger._logging_level import (
     _LoggingLevelAnnotation as LoggingLevelAnnotation,
@@ -13,6 +19,7 @@ from pydantic_logger._pydantic_logger_base import (
 if TYPE_CHECKING:
     PydanticEliotLogger = _logger_types.PydanticEliotLogger
     PydanticLogbookLogger = _logger_types.PydanticLogbookLogger
+    PydanticLogfireLogger = _logger_types.PydanticLogfireLogger
     PydanticLoguruLogger = _logger_types.PydanticLoguruLogger
     PydanticPicologgingLogger = _logger_types.PydanticPicologgingLogger
     PydanticStructlogLogger = _logger_types.PydanticStructlogLogger
@@ -25,6 +32,8 @@ __all__ = [
     "PydanticBuiltinLogger",
     "PydanticLoggerBase",
     "LoggingConfig",
+    "StreamHandlerConfig",
+    "FileHandlerConfig",
     "LoggingLevel",
     "LoggingLevelAnnotation",
     "PydanticLoguruLogger",
@@ -32,6 +41,7 @@ __all__ = [
     "PydanticLogbookLogger",
     "PydanticPicologgingLogger",
     "PydanticEliotLogger",
+    "PydanticLogfireLogger",
 ]
 
 _OPTIONAL_LOGGERS = {
@@ -40,6 +50,7 @@ _OPTIONAL_LOGGERS = {
     "PydanticLogbookLogger",
     "PydanticPicologgingLogger",
     "PydanticEliotLogger",
+    "PydanticLogfireLogger",
 }
 
 

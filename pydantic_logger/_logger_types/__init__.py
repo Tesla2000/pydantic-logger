@@ -11,6 +11,9 @@ if TYPE_CHECKING:
     from pydantic_logger._logger_types._logbook import (
         _PydanticLogbookLogger as PydanticLogbookLogger,
     )
+    from pydantic_logger._logger_types._logfire import (
+        _PydanticLogfireLogger as PydanticLogfireLogger,
+    )
     from pydantic_logger._logger_types._loguru import (
         _PydanticLoguruLogger as PydanticLoguruLogger,
     )
@@ -28,6 +31,7 @@ __all__ = [
     "PydanticLogbookLogger",
     "PydanticPicologgingLogger",
     "PydanticEliotLogger",
+    "PydanticLogfireLogger",
 ]
 
 
@@ -62,4 +66,10 @@ def __getattr__(name: str) -> object:
         )
 
         return _PydanticEliotLogger
+    if name == "PydanticLogfireLogger":
+        from pydantic_logger._logger_types._logfire import (
+            _PydanticLogfireLogger,
+        )
+
+        return _PydanticLogfireLogger
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
