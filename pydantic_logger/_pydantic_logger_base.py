@@ -26,7 +26,6 @@ from pydantic_logger._logging_level import (
     _LoggingLevelAnnotation as LoggingLevelAnnotation,
 )
 
-
 _ZIP_STRICT_SUPPORTED = sys.version_info >= (3, 10)
 
 
@@ -104,9 +103,7 @@ class _PydanticLoggerBase(BaseModel, Generic[LoggerType], ABC):
                 for base in origin_bases:
                     if not isinstance(base, typing._GenericAlias):
                         continue
-                    generic_args = class_.__pydantic_generic_metadata__[
-                        "args"
-                    ]
+                    generic_args = class_.__pydantic_generic_metadata__["args"]
                     pairs = (
                         zip(get_args(base), generic_args, strict=True)
                         if _ZIP_STRICT_SUPPORTED

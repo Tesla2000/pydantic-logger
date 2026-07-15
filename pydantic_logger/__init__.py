@@ -1,13 +1,11 @@
 from typing import TYPE_CHECKING
 
 from pydantic_logger import _logger_types
-from pydantic_logger._logging_config import (
-    _FileHandlerConfig as FileHandlerConfig,
-)
+from pydantic_logger._handlers import FileHandlerConfig
+from pydantic_logger._handlers import GitHubAutoFixHandler
+from pydantic_logger._handlers import GitHubAutoFixSettings
+from pydantic_logger._handlers import StreamHandlerConfig
 from pydantic_logger._logging_config import _LoggingConfig as LoggingConfig
-from pydantic_logger._logging_config import (
-    _StreamHandlerConfig as StreamHandlerConfig,
-)
 from pydantic_logger._logging_level import _LoggingLevel as LoggingLevel
 from pydantic_logger._logging_level import (
     _LoggingLevelAnnotation as LoggingLevelAnnotation,
@@ -42,6 +40,10 @@ __all__ = [
     "PydanticPicologgingLogger",
     "PydanticEliotLogger",
     "PydanticLogfireLogger",
+    "GitHubAutoFixHandler",
+    "GitHubAutoFixSettings",
+    "StreamHandlerConfig",
+    "FileHandlerConfig",
 ]
 
 _OPTIONAL_LOGGERS = {
