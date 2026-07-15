@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 26.3.1
+    rev: 26.5.1
     hooks:
       - id: black
         exclude: '\.pyi$'
@@ -25,7 +25,7 @@ repos:
         exclude: '\.pyi$'
         args: [ --remove-all-unused-imports, --in-place ]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.20.0
+    rev: v2.1.0
     hooks:
       - id: mypy
         exclude: (tests|\.pyi$)
@@ -33,6 +33,11 @@ repos:
           - pydantic>=2.8.2
           - pydantic-settings>=2.13.0
           - pydantic-frozendict @ git+https://github.com/Tesla2000/pydantic-frozendict
+          - structlog
+          - picologging
+          - loguru
+          - eliot
+          - logbook
         args: [ --strict ]
   - repo: https://github.com/pycqa/flake8
     rev: '7.3.0'
@@ -49,16 +54,16 @@ repos:
           [
             ".",
             "--exclude",
-            ".venv,venv,tests/base.py",
+            ".venv,venv,tests/base.py,tests",
             "--ignore-attributes-for-classes=.*",
             "--ignore-decorators=@app.*,@pytest.fixture,@property,@model_validator,@field_serializer,@field_validator",
-            "--ignore-names=Meta,__dict__,cli_cmd,model_post_init,apply,setUp,",
+            "--ignore-names=Meta,__dict__,cli_cmd,return_value,model_post_init,apply,setUp,__getattr__",
           ]
         stages: [ pre-commit ]
   - repo: https://github.com/Tesla2000/any-hook
-    rev: v2.0.12
+    rev: v3.11.0
     hooks:
       - id: any-hook
         exclude: \.pyi$
-        args: [--modifiers, '[{"type": "git-add", "directories": ["pydantic_logger", "tests"]},{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
+        args: [--modifiers, '[{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports","excluded_paths":["pydantic_logger/_logger_types/__init__.py"]},{"type":"pydantic-v1-to-v2"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
         stages: [ pre-commit ]
