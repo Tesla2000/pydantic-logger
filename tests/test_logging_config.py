@@ -9,8 +9,10 @@ from pydantic_frozendict import PydanticFrozendict
 
 from pydantic_logger import LoggingConfig
 from pydantic_logger import LoggingLevel
-from pydantic_logger._logging_config import _FileHandlerConfig
-from pydantic_logger._logging_config import _StreamHandlerConfig
+from pydantic_logger._handlers._file_handler_config import _FileHandlerConfig
+from pydantic_logger._handlers._stream_handler_config import (
+    _StreamHandlerConfig,
+)
 
 
 def test_default_stream_is_stdout() -> None:

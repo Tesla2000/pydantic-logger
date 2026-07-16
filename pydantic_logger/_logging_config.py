@@ -1,38 +1,17 @@
 import logging
-import sys
-from pathlib import Path
 from typing import ClassVar
-from typing import Literal
 from typing import Union
 
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic_frozendict import PydanticFrozendict
 
+from pydantic_logger._handlers import FileHandlerConfig
+from pydantic_logger._handlers import StreamHandlerConfig
 from pydantic_logger._logging_level import _LoggingLevel as LoggingLevel
 from pydantic_logger._logging_level import (
     _LoggingLevelAnnotation as LoggingLevelAnnotation,
 )
-
-
-class _StreamHandlerConfig(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    stream: Literal["stdout", "stderr"] = "stdout"
-
-    def build(self) -> logging.Handler:
-        return logging.StreamHandler(
-            sys.stdout if self.stream == "stdout" else sys.stderr
-        )
-
-
-class _FileHandlerConfig(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    path: Path
-
-    def build(self) -> logging.Handler:
-        return logging.FileHandler(str(self.path))
 
 
 class _LoggingConfig(BaseModel):
@@ -43,8 +22,8 @@ class _LoggingConfig(BaseModel):
     logger_to_level: PydanticFrozendict[str, LoggingLevelAnnotation] = (
         PydanticFrozendict()
     )
-    handlers: tuple[Union[_StreamHandlerConfig, _FileHandlerConfig], ...] = (
-        _StreamHandlerConfig(),
+    handlers: tuple[Union[StreamHandlerConfig, FileHandlerConfig], ...] = (
+        StreamHandlerConfig(),
     )
 
     def apply(self) -> None:
